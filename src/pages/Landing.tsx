@@ -110,35 +110,48 @@ export function Landing() {
            PALOMAR-STYLE FIXED NAVBAR
       ═══════════════════════════════════════════════ */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          navScrolled ? 'bg-brand-cream/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          navScrolled
+            ? 'bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8E2D8] shadow-sm'
+            : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="relative flex items-center h-16 md:h-20">
 
             {/* Desktop Left Links */}
-            <div className="hidden md:flex items-center gap-8 animate-fade-down stagger-1">
+            <div className="hidden md:flex items-center gap-10">
               <button
                 type="button"
                 onClick={() => navigate('/start')}
-                className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity flex items-center gap-1 cursor-pointer"
+                className={`text-xs font-semibold tracking-[0.15em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
+                  navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
+                }`}
               >
                 Solutions
-                <svg className="w-3.5 h-3.5 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                <svg className="w-3 h-3 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
               </button>
-              <a href="#experiences" className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity">Experiences</a>
-              <a href="#features" className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity">Features</a>
+              <a href="#experiences" className={`text-xs font-semibold tracking-[0.15em] uppercase transition-colors ${
+                navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
+              }`}>Experiences</a>
+              <a href="#features" className={`text-xs font-semibold tracking-[0.15em] uppercase transition-colors ${
+                navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
+              }`}>Features</a>
             </div>
 
-            {/* Center Logo (Absolute Centered) */}
+            {/* Center Logo */}
             <a
               href="/"
-              className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 animate-fade-down stagger-2 select-none"
+              className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 select-none"
               aria-label="EcoQuest Home"
             >
-              <svg className="w-5 h-5 text-brand-dark fill-brand-dark" viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg>
-              <span className="text-xl text-brand-dark tracking-tight font-helvetica-neue font-medium">
+              <svg
+                className={`w-5 h-5 transition-colors ${ navScrolled ? 'fill-[#1B4332]' : 'fill-white' }`}
+                viewBox="0 0 24 24"
+              >
+                <polygon points="12 2 22 20 2 20"/>
+              </svg>
+              <span className={`text-lg font-semibold tracking-tight transition-colors ${ navScrolled ? 'text-[#1B4332]' : 'text-white' }`}>
                 EcoQuest
               </span>
             </a>
@@ -146,7 +159,11 @@ export function Landing() {
             {/* Desktop CTA (Right) */}
             <a
               href="/start"
-              className="hidden md:inline-flex items-center ml-auto px-5 py-2.5 bg-brand-dark text-white text-sm tracking-wide uppercase rounded-full hover:bg-brand-green transition-colors animate-fade-down stagger-3 select-none"
+              className={`hidden md:inline-flex items-center ml-auto px-5 py-2 text-xs font-semibold tracking-[0.15em] uppercase rounded-full border transition-colors ${
+                navScrolled
+                  ? 'bg-[#1B4332] text-white border-[#1B4332] hover:bg-[#2D6A4F]'
+                  : 'bg-white/15 text-white border-white/40 hover:bg-white/25 backdrop-blur-sm'
+              }`}
             >
               Try It Free
             </a>
@@ -196,50 +213,68 @@ export function Landing() {
         </div>
       </nav>
 
-      {/* ═══════════════════════════════════════════════
-           PALOMAR-STYLE FULL-VIEWPORT VIDEO HERO
-      ═══════════════════════════════════════════════ */}
-      <section className="relative w-full h-screen min-h-[700px] overflow-hidden bg-brand-cream">
+      {/* ═══ VIDEO HERO ═══ */}
+      <section className="relative w-full h-screen min-h-[680px] overflow-hidden">
         {/* Full-bleed video */}
-        <div className="absolute inset-0">
-          <video
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260820_010308_b1636845-4c15-4ab6-b0c9-9a29bfb0c6e3.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover object-bottom"
-          />
-        </div>
+        <video
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260820_010308_b1636845-4c15-4ab6-b0c9-9a29bfb0c6e3.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Dark gradient overlay so text is readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/50" />
 
-        {/* Left-aligned content column */}
-        <div className="relative z-10 flex flex-col items-start max-w-7xl mx-auto pt-28 md:pt-36 px-6 lg:px-8">
-          {/* Announcement pill */}
-          <a
-            href="/start"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-dark/15 bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors mb-5 md:mb-6 animate-fade-up stagger-3"
-          >
-            <span className="text-sm text-brand-dark font-normal">Live for everyone today! Explore eco-quests and win badges.</span>
-            <svg className="w-3.5 h-3.5 text-brand-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
+        {/* Hero content — vertically centered, bottom logos pinned */}
+        <div className="relative z-10 h-full flex flex-col justify-between max-w-7xl mx-auto px-6 lg:px-8">
 
-          {/* Headline */}
-          <h1 className="text-left text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-brand-dark leading-[1.05] tracking-tight max-w-4xl font-helvetica-neue font-light animate-fade-up stagger-4">
-            One unified platform to learn,
-            <br className="hidden sm:block" /> play, master, and protect Earth
-          </h1>
+          {/* Center block: headline + CTA */}
+          <div className="flex-1 flex flex-col justify-center pt-24">
+            {/* Pill */}
+            <a
+              href="/start"
+              className="self-start inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors mb-6"
+            >
+              <span className="text-xs text-white font-medium tracking-wide">🌿 Live for everyone — explore quests and win badges</span>
+              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
 
-          {/* Backed by / trusted by wordmarks */}
-          <div className="w-full mt-8 md:mt-10 animate-fade-up stagger-5">
-            <p className="text-left text-xs tracking-[0.25em] uppercase text-brand-dark/50 mb-6 md:mb-8 font-helvetica-neue">
-              Backed by
-            </p>
-            <div className="flex flex-wrap items-center justify-start gap-6 md:gap-12 lg:gap-16 animate-fade-up stagger-6">
-              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-playfair font-bold">Meridian</span>
-              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-oswald uppercase font-medium">STELLEX</span>
-              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-montserrat font-bold">Luminar</span>
-              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-roboto-slab uppercase font-semibold">OVERLAND</span>
-              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-raleway font-bold">Kinetic</span>
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-light leading-[1.05] tracking-tight max-w-4xl">
+              One unified platform<br />
+              <span className="italic">to learn, play &amp; protect Earth</span>
+            </h1>
+
+            {/* Sub CTA buttons */}
+            <div className="flex flex-wrap items-center gap-4 mt-10">
+              <a
+                href="/start"
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#1B4332] text-sm font-bold rounded-full hover:bg-[#E8F5E9] transition-colors"
+              >
+                Get Started Free
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <button
+                type="button"
+                onClick={() => setDemoOpen(true)}
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-white text-sm font-semibold rounded-full border border-white/40 hover:border-white hover:bg-white/10 transition-colors"
+              >
+                ▶ Watch Demo
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom bar: Backed by */}
+          <div className="pb-10">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-4">Trusted by learners worldwide</p>
+            <div className="flex flex-wrap items-center gap-8 md:gap-14">
+              <span className="text-base md:text-lg text-white/60 font-playfair font-bold">Meridian</span>
+              <span className="text-base md:text-lg text-white/60 font-oswald uppercase">STELLEX</span>
+              <span className="text-base md:text-lg text-white/60 font-montserrat font-bold">Luminar</span>
+              <span className="text-base md:text-lg text-white/60 font-roboto-slab uppercase">OVERLAND</span>
+              <span className="text-base md:text-lg text-white/60 font-raleway font-bold">Kinetic</span>
             </div>
           </div>
         </div>
