@@ -5,6 +5,7 @@ import {
   Gamepad2,
   House,
   Leaf,
+  LogOut,
   Menu,
   Trophy,
   User,
@@ -14,6 +15,7 @@ import {
 import { useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { levelFromXp, rankFor } from '@/engine/gamification/levels';
+import { useLogout } from '@/hooks/useLogout';
 import { useMode } from '@/hooks/useMode';
 import { useStrings } from '@/i18n';
 import { cn } from '@/lib/cn';
@@ -50,6 +52,7 @@ function PlusShell() {
   const { profile } = useApp();
   const { progress } = useMode();
   const location = useLocation();
+  const logout = useLogout();
   const [moreOpen, setMoreOpen] = useState(false);
   const level = levelFromXp(progress.xp);
   const rank = rankFor('plus', level.level);
@@ -109,8 +112,8 @@ function PlusShell() {
           </ul>
         </nav>
 
-        {/* User Card in Desktop Sidebar */}
-        <div className="p-4 border-t border-slate-100">
+        {/* User Card + Logout in Desktop Sidebar */}
+        <div className="p-4 border-t border-slate-100 space-y-2">
           <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 border border-slate-200/80">
             <div className="flex items-center gap-2.5">
               <div className="size-9 rounded-full overflow-hidden ring-2 ring-emerald-500">
@@ -130,6 +133,15 @@ function PlusShell() {
               <span>{progress.coins > 0 ? progress.coins : 20}</span>
             </div>
           </div>
+          {/* Visible Logout Button */}
+          <button
+            type="button"
+            onClick={logout}
+            className="flex w-full items-center gap-2.5 rounded-2xl px-3 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-50 border border-rose-100"
+          >
+            <LogOut className="size-4" aria-hidden />
+            Log out
+          </button>
         </div>
       </aside>
 

@@ -5,6 +5,7 @@ import {
   Globe2,
   Leaf,
   ListChecks,
+  LogOut,
   Recycle,
   Sparkles,
   TrendingUp,
@@ -18,6 +19,7 @@ import { Modal } from '@/components/ui/Modal';
 import { levelFromXp, rankFor } from '@/engine/gamification/levels';
 import { topicMastery } from '@/engine/gamification/progress';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useLogout } from '@/hooks/useLogout';
 import { useMode } from '@/hooks/useMode';
 import { paths } from '@/lib/paths';
 import { useApp } from '@/store/context';
@@ -25,6 +27,7 @@ import { useApp } from '@/store/context';
 export default function PlusProfile() {
   const { profile, updateProfile } = useApp();
   const { progress } = useMode();
+  const logout = useLogout();
   const [editOpen, setEditOpen] = useState(false);
   const [nameInput, setNameInput] = useState(profile?.name ?? 'Yatri Dekivadiya');
   useDocumentTitle('Profile · EcoQuest 15+');
@@ -229,6 +232,16 @@ export default function PlusProfile() {
         <ExperienceSwitcher mode="plus" />
         <DataSettings mode="plus" />
       </div>
+
+      {/* Logout Button */}
+      <button
+        type="button"
+        onClick={logout}
+        className="flex w-full items-center justify-center gap-2.5 rounded-2xl border-2 border-rose-100 bg-white px-4 py-3.5 text-[15px] font-bold text-rose-600 shadow-sm transition hover:bg-rose-50 active:scale-95"
+      >
+        <LogOut className="size-5" aria-hidden />
+        Log out
+      </button>
 
       {/* Edit Profile Modal */}
       <Modal open={editOpen} onClose={() => setEditOpen(false)} title="Edit Profile">

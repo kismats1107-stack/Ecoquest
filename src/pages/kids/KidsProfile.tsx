@@ -1,16 +1,18 @@
-import { BookOpen, Star, Trophy } from 'lucide-react';
+import { BookOpen, LogOut, Star, Trophy } from 'lucide-react';
 import { DataSettings, ExperienceSwitcher } from '@/components/profile/ProfileControls';
 import { Avatar } from '@/components/ui/Avatar';
 import { Card } from '@/components/ui/Card';
 import { levelFromXp, rankFor } from '@/engine/gamification/levels';
 import { topicMastery } from '@/engine/gamification/progress';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useLogout } from '@/hooks/useLogout';
 import { useMode } from '@/hooks/useMode';
 import { useApp } from '@/store/context';
 
 export default function KidsProfile() {
   const { profile } = useApp();
   const { progress } = useMode();
+  const logout = useLogout();
   useDocumentTitle('Explorer Profile · EcoQuest Kids');
   const level = levelFromXp(progress.xp);
   const rank = rankFor('kids', level.level);
@@ -142,6 +144,18 @@ export default function KidsProfile() {
       <div className="grid gap-4 sm:grid-cols-2 pt-2">
         <ExperienceSwitcher mode="kids" />
         <DataSettings mode="kids" />
+      </div>
+
+      {/* Logout Button */}
+      <div className="pt-2">
+        <button
+          type="button"
+          onClick={logout}
+          className="flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-rose-200 bg-white px-4 py-3.5 font-fun text-base font-black text-rose-600 shadow-sm transition hover:bg-rose-50 active:scale-95"
+        >
+          <LogOut className="size-5" aria-hidden />
+          Log out
+        </button>
       </div>
     </div>
   );
