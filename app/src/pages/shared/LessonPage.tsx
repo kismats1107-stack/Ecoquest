@@ -51,81 +51,155 @@ function KidsLesson({ topic, lesson }: { topic: Topic; lesson: Lesson }) {
   const section = lesson.sections[card];
   const tone = tones[topic.tone];
 
+  // Action checklist items matching Screen 3
+  const ACTIONS = [
+    'Turn off the tap while brushing.',
+    'Fix leaks at home right away.',
+    'Use a bucket instead of a hose.',
+    'Choose water-friendly and eco products.',
+  ];
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link to={p.learn} className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 font-fun text-sm font-semibold text-slate-600 shadow-sm hover:text-ink">
+    <div className="mx-auto max-w-5xl">
+      <Link to={p.learn} className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 font-fun text-sm font-bold text-slate-600 shadow-sm hover:text-ink">
         <ArrowLeft className="size-4" aria-hidden /> All topics
       </Link>
-      <div className="mb-4 flex items-center gap-3">
-        <span className={cn('grid size-14 place-items-center rounded-2xl text-4xl', tone.soft)} aria-hidden>
-          {topic.emoji}
-        </span>
-        <div>
-          <h1 className="font-fun text-3xl font-semibold text-ink">{lesson.title}</h1>
-          <p className="text-slate-600">{lesson.intro}</p>
+
+      {/* Screen 3 Header */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border-2 border-emerald-100 bg-white p-5 shadow-sm">
+        <div className="flex items-center gap-4">
+          <span className={cn('grid size-14 place-items-center rounded-2xl text-4xl shadow-sm', tone.soft)} aria-hidden>
+            {topic.emoji}
+          </span>
+          <div>
+            <h1 className="font-fun text-2xl sm:text-3xl font-black text-slate-900">{lesson.title}</h1>
+            <p className="font-fun text-sm text-slate-500 font-semibold">{lesson.intro}</p>
+          </div>
+        </div>
+
+        {/* Progress pill */}
+        <div className="flex items-center gap-2">
+          <span className="font-fun text-xs font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+            {card + 1} / {total}
+          </span>
         </div>
       </div>
 
-      <div className="mb-3 flex items-center gap-2" aria-label={`Card ${card + 1} of ${total}`}>
-        {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={cn('h-2.5 flex-1 rounded-full transition', i <= card ? 'bg-emerald-500' : 'bg-emerald-100')} />
-        ))}
-      </div>
-
-      <Card className="relative min-h-[340px] overflow-hidden border-2 border-emerald-100">
-        {justDone && <Confetti count={36} />}
-        <AnimatePresence mode="wait">
-          <motion.div key={card} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.22 }} className="p-6 sm:p-8">
-            {!isSummary && section ? (
-              <div className="text-center">
-                <div className="mb-3 text-7xl" aria-hidden>
-                  {section.emoji}
-                </div>
-                <h2 className="font-fun text-2xl font-semibold text-ink sm:text-3xl">{section.heading}</h2>
-                <p className="mx-auto mt-3 max-w-md text-lg leading-relaxed text-slate-700">{section.body}</p>
-                {section.fact && (
-                  <p className="mx-auto mt-5 flex max-w-md items-start gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-left font-semibold text-amber-900">
-                    <Lightbulb className="mt-0.5 size-5 shrink-0 text-amber-500" aria-hidden />
-                    <span>
-                      <span className="font-fun">Did you know? </span>
-                      {section.fact}
-                    </span>
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-center">
-                <Mascot mood={done ? 'cheer' : 'happy'} className="size-28" />
-                <h2 className="mt-2 font-fun text-2xl font-semibold text-ink">Great reading!</h2>
-                <p className="mt-2 max-w-md text-lg text-slate-700">{lesson.takeaway}</p>
-                {done ? (
-                  <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 font-fun font-semibold text-emerald-800">
-                    <CircleCheck className="size-5" aria-hidden /> {justDone ? `+${GAMIFICATION.lessonXp} Eco Stars earned!` : 'Lesson complete'}
-                  </p>
+      {/* 2-Column Layout matching Screen 3 */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 items-start">
+        {/* Left Column: Interactive Story & What Can You Do Checklist */}
+        <div className="space-y-6">
+          <Card className="relative min-h-[300px] overflow-hidden border-2 border-emerald-100 bg-white p-6 sm:p-8 rounded-[2rem] shadow-sm">
+            {justDone && <Confetti count={36} />}
+            <AnimatePresence mode="wait">
+              <motion.div key={card} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.2 }}>
+                {!isSummary && section ? (
+                  <div className="text-center">
+                    <div className="mb-3 text-7xl" aria-hidden>
+                      {section.emoji}
+                    </div>
+                    <h2 className="font-fun text-2xl font-black text-slate-900 sm:text-3xl">{section.heading}</h2>
+                    <p className="mx-auto mt-3 max-w-md text-base sm:text-lg leading-relaxed text-slate-700 font-medium">{section.body}</p>
+                    {section.fact && (
+                      <p className="mx-auto mt-4 flex max-w-md items-start gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-left font-semibold text-amber-900 border border-amber-200">
+                        <Lightbulb className="mt-0.5 size-5 shrink-0 text-amber-500" aria-hidden />
+                        <span>
+                          <strong className="font-fun">Did you know? </strong>
+                          {section.fact}
+                        </span>
+                      </p>
+                    )}
+                  </div>
                 ) : (
-                  <Button size="xl" chunky className="mt-5" onClick={complete} icon={<Check className="size-5" aria-hidden />}>
-                    I learned it! +{GAMIFICATION.lessonXp} ⭐
-                  </Button>
+                  <div className="flex flex-col items-center text-center">
+                    <Mascot mood={done ? 'cheer' : 'happy'} className="size-28" />
+                    <h2 className="mt-2 font-fun text-2xl font-black text-slate-900">Great reading!</h2>
+                    <p className="mt-2 max-w-md text-base text-slate-700">{lesson.takeaway}</p>
+                    {done ? (
+                      <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 font-fun font-bold text-emerald-800">
+                        <CircleCheck className="size-5" aria-hidden /> {justDone ? `+${GAMIFICATION.lessonXp} Eco Stars earned!` : 'Lesson complete'}
+                      </p>
+                    ) : (
+                      <Button size="xl" chunky className="mt-5" onClick={complete} icon={<Check className="size-5" aria-hidden />}>
+                        I learned it! +{GAMIFICATION.lessonXp} ⭐
+                      </Button>
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </Card>
+              </motion.div>
+            </AnimatePresence>
+          </Card>
 
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <Button variant="outline" size="lg" chunky onClick={() => setCard((c) => Math.max(0, c - 1))} disabled={card === 0} icon={<ArrowLeft className="size-5" aria-hidden />}>
-          Back
-        </Button>
-        {!isSummary ? (
-          <Button size="lg" chunky onClick={() => setCard((c) => Math.min(total - 1, c + 1))} iconRight={<ArrowRight className="size-5" aria-hidden />}>
-            Next
-          </Button>
-        ) : (
-          <Button size="lg" chunky className="bg-orange-500 hover:bg-orange-600" style={{ '--btn-shadow-color': '#c2410c' } as CSSProperties} onClick={() => navigate(p.generatorFor(topic.id))} icon={<Zap className="size-5" aria-hidden />}>
-            Quiz me!
-          </Button>
-        )}
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between gap-3">
+            <Button variant="outline" size="lg" chunky onClick={() => setCard((c) => Math.max(0, c - 1))} disabled={card === 0} icon={<ArrowLeft className="size-5" aria-hidden />}>
+              Back
+            </Button>
+            {!isSummary ? (
+              <Button size="lg" chunky onClick={() => setCard((c) => Math.min(total - 1, c + 1))} iconRight={<ArrowRight className="size-5" aria-hidden />}>
+                Next
+              </Button>
+            ) : (
+              <Button size="lg" chunky className="bg-orange-500 hover:bg-orange-600" style={{ '--btn-shadow-color': '#c2410c' } as CSSProperties} onClick={() => navigate(p.generatorFor(topic.id))} icon={<Zap className="size-5" aria-hidden />}>
+                Quiz me!
+              </Button>
+            )}
+          </div>
+
+          {/* What can you do? Checklist (Screen 3) */}
+          <div className="rounded-3xl border-2 border-emerald-100 bg-white p-6 shadow-sm">
+            <h3 className="font-fun text-xl font-black text-slate-900 mb-4">
+              What can you do?
+            </h3>
+            <ul className="space-y-2.5">
+              {ACTIONS.map((act) => (
+                <li key={act} className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                  <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                    <Check className="size-3.5 stroke-[3]" />
+                  </div>
+                  <span>{act}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Right Column: Quick Facts & Encouragement Card (Screen 3) */}
+        <div className="space-y-6">
+          {/* Quick Facts Card */}
+          <div className="rounded-3xl border-2 border-sky-100 bg-sky-50/70 p-6 shadow-sm">
+            <h3 className="font-fun text-lg font-black text-sky-950 mb-3 flex items-center gap-2">
+              <span>💧 Quick Facts</span>
+            </h3>
+            <ul className="space-y-3 text-xs sm:text-sm font-semibold text-slate-700">
+              <li className="flex items-start gap-2.5">
+                <span className="text-base">🌊</span>
+                <span>Only 2.5% of Earth's water is fresh water suitable for drinking.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-base">🚰</span>
+                <span>A single dripping tap can waste over 10,000 litres of water in a year!</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-base">🌱</span>
+                <span>Every drop counts towards keeping our rivers, oceans, and forests thriving.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Encouragement Badge Card (Screen 3) */}
+          <div className="rounded-3xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-lime-50 p-6 text-center shadow-sm">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-md mb-3">
+              <span className="text-2xl">🌱</span>
+            </div>
+            <h4 className="font-fun text-lg font-black text-emerald-950">
+              You're making a difference!
+            </h4>
+            <p className="mt-1 font-fun text-xs text-emerald-800 font-semibold">
+              Every small action today protects the planet for tomorrow.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

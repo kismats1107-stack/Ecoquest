@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Check, ChevronDown, Clock, Coins, RefreshCw, Sparkles, Star, Target, Trophy, X, Zap } from 'lucide-react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router';
+import { GoldenTrophyArt } from '@/components/brand/EarthlyArt';
 import { Mascot } from '@/components/brand/Mascot';
 import { Button, buttonClasses } from '@/components/ui/Button';
 import { Card, Pill } from '@/components/ui/Card';
+import { useApp } from '@/store/context';
 import { Confetti } from '@/components/ui/Confetti';
-import { ProgressRing } from '@/components/ui/Progress';
 import { difficultyStyles } from '@/components/ui/tones';
 import { iconFor } from '@/components/ui/icons';
 import { DAILY_CHALLENGE } from '@/config/gamification';
@@ -49,30 +50,82 @@ export default function ResultsPage() {
   const headline = kids ? s.result.kidsTitle : accuracyPct >= 85 ? 'Outstanding work!' : accuracyPct >= 60 ? 'Quiz complete — solid effort!' : 'Quiz complete — keep going!';
   const playedGames = attempt.games.filter((g) => !g.skipped);
 
+  const { profile } = useApp();
+
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
+    <div className="mx-auto max-w-4xl space-y-6">
       {/* Hero */}
-      <Card className={cn('relative overflow-hidden', kids && 'border-2 border-emerald-100')}>
-        {summary && attempt.accuracy >= 0.6 && <Confetti count={kids ? 40 : 24} spread={kids ? 260 : 200} />}
-        <div className={cn('flex flex-col items-center gap-5 p-6 text-center sm:flex-row sm:text-left', kids ? 'bg-gradient-to-br from-emerald-100 via-lime-50 to-sky-100' : 'bg-gradient-to-br from-teal-50 via-white to-emerald-50')}>
-          {kids ? (
+      {!kids ? (
+        <Card className="relative overflow-hidden rounded-[2rem] border border-[#C2E7D0] bg-[#FAF7F2] p-8 sm:p-10 shadow-sm text-center">
+          {summary && attempt.accuracy >= 0.6 && <Confetti count={28} spread={220} />}
+          
+          {/* Centered Golden Trophy with Laurels */}
+          <div className="mx-auto flex justify-center">
+            <GoldenTrophyArt className="w-32 h-32 sm:w-40 sm:h-40 drop-shadow-md" />
+          </div>
+
+          {/* Heading */}
+          <h1 className="mt-4 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            Great Job, {profile?.name?.split(' ')[0] ?? 'Yatri'}! 🎉
+          </h1>
+
+          {/* Score line */}
+          <p className="mt-2 text-2xl sm:text-3xl font-black text-[#13382B]">
+            You scored {attempt.score}/{attempt.total}
+          </p>
+          <p className="text-sm font-bold text-slate-500">
+            That’s {accuracyPct}% correct!
+          </p>
+
+          {/* Stat Pills */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-[#FFFBEB] px-5 py-2 text-sm font-black text-amber-900 shadow-sm">
+              <Star className="size-4 fill-amber-400 text-amber-500" />
+              <span>+{attempt.xpEarned} Points Earned</span>
+            </div>
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-[#FAF5FF] px-5 py-2 text-sm font-black text-purple-900 shadow-sm">
+              <Trophy className="size-4 text-purple-600" />
+              <span>+{outcome?.newBadges?.length ? outcome.newBadges.length : 1} Badge Earned</span>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById('breakdown')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-full sm:w-1/2 rounded-full border-2 border-slate-900 bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_3px_0_#0f172a] hover:bg-slate-50 active:translate-y-0.5 active:shadow-none"
+            >
+              View Answers
+            </button>
+            <Link
+              to={p.home}
+              className="w-full sm:w-1/2 inline-flex items-center justify-center rounded-full border-2 border-slate-900 bg-[#13382B] px-6 py-3 text-sm font-black text-white shadow-[0_3px_0_#0f172a] hover:bg-[#1B4332] active:translate-y-0.5 active:shadow-none"
+            >
+              Continue →
+            </Link>
+          </div>
+
+          {/* Motivational Botanical Footer */}
+          <div className="mt-8 pt-6 border-t border-slate-200/80 text-center font-serif italic text-sm font-bold text-[#2D6A4F]">
+            🌿 Every quiz brings you closer to a greener planet!
+          </div>
+        </Card>
+      ) : (
+        <Card className="relative overflow-hidden border-2 border-emerald-100">
+          {summary && attempt.accuracy >= 0.6 && <Confetti count={40} spread={260} />}
+          <div className="flex flex-col items-center gap-5 p-6 text-center sm:flex-row sm:text-left bg-gradient-to-br from-emerald-100 via-lime-50 to-sky-100">
             <Mascot mood={attempt.accuracy >= 0.6 ? 'cheer' : 'happy'} className="size-28 shrink-0" />
-          ) : (
-            <ProgressRing value={attempt.accuracy} size={128} stroke={11} label={`${accuracyPct}% accuracy`}>
-              <span>
-                <span className="block text-3xl font-black text-ink tabular">{accuracyPct}%</span>
-                <span className="text-xs font-semibold text-slate-500">accuracy</span>
-              </span>
-            </ProgressRing>
-          )}
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold text-slate-500">
-              <span aria-hidden>{topic?.emoji} </span>
-              {attempt.topicName} · {difficultyStyles[attempt.difficulty].label}
-              {attempt.source === 'ai' && <Sparkles className="ml-1 inline size-3.5 text-violet-500" aria-label="AI-generated" />}
-            </p>
-            <h1 className={cn('mt-1 font-extrabold text-ink', kids ? 'font-fun text-3xl font-semibold sm:text-4xl' : 'text-2xl sm:text-3xl')}>{headline}</h1>
-            {kids && (
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-slate-500">
+                <span aria-hidden>{topic?.emoji} </span>
+                {attempt.topicName} · {difficultyStyles[attempt.difficulty].label}
+                {attempt.source === 'ai' && <Sparkles className="ml-1 inline size-3.5 text-violet-500" aria-label="AI-generated" />}
+              </p>
+              <h1 className="mt-1 font-extrabold text-ink font-fun text-3xl font-semibold sm:text-4xl">{headline}</h1>
               <div className="mt-2 flex justify-center gap-1 sm:justify-start" aria-label={`${shownStars} out of 3 stars`}>
                 {[0, 1, 2].map((i) => (
                   <motion.span key={i} initial={{ scale: 0, rotate: -40 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: 0.25 + i * 0.18, type: 'spring', stiffness: 300, damping: 12 }}>
@@ -80,30 +133,30 @@ export default function ResultsPage() {
                   </motion.span>
                 ))}
               </div>
-            )}
-            <p className="mt-2 text-slate-600">
-              You answered <strong className="text-ink">{attempt.score}</strong> of <strong className="text-ink">{attempt.total}</strong> correctly
-              {!summary && <> · {formatRelative(attempt.completedAt)}</>}.
-            </p>
-          </div>
-        </div>
-        <dl className="grid grid-cols-2 divide-line border-t border-line sm:grid-cols-4 sm:divide-x">
-          {[
-            { icon: <Target className="size-4" aria-hidden />, k: s.result.score, v: `${attempt.score}/${attempt.total}` },
-            { icon: <Check className="size-4" aria-hidden />, k: s.result.accuracy, v: `${accuracyPct}%` },
-            { icon: <Clock className="size-4" aria-hidden />, k: s.result.time, v: formatDuration(attempt.timeTakenMs) },
-            { icon: <Zap className="size-4" aria-hidden />, k: 'Challenges', v: playedGames.length ? `${playedGames.filter((g) => g.success).length}/${playedGames.length} won` : '—' },
-          ].map((row) => (
-            <div key={row.k} className="px-5 py-4">
-              <dt className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-                {row.icon}
-                {row.k}
-              </dt>
-              <dd className="mt-0.5 text-xl font-black text-ink tabular">{row.v}</dd>
+              <p className="mt-2 text-slate-600">
+                You answered <strong className="text-ink">{attempt.score}</strong> of <strong className="text-ink">{attempt.total}</strong> correctly
+                {!summary && <> · {formatRelative(attempt.completedAt)}</>}.
+              </p>
             </div>
-          ))}
-        </dl>
-      </Card>
+          </div>
+          <dl className="grid grid-cols-2 divide-line border-t border-line sm:grid-cols-4 sm:divide-x">
+            {[
+              { icon: <Target className="size-4" aria-hidden />, k: s.result.score, v: `${attempt.score}/${attempt.total}` },
+              { icon: <Check className="size-4" aria-hidden />, k: s.result.accuracy, v: `${accuracyPct}%` },
+              { icon: <Clock className="size-4" aria-hidden />, k: s.result.time, v: formatDuration(attempt.timeTakenMs) },
+              { icon: <Zap className="size-4" aria-hidden />, k: 'Challenges', v: playedGames.length ? `${playedGames.filter((g) => g.success).length}/${playedGames.length} won` : '—' },
+            ].map((row) => (
+              <div key={row.k} className="px-5 py-4">
+                <dt className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+                  {row.icon}
+                  {row.k}
+                </dt>
+                <dd className="mt-0.5 text-xl font-black text-ink tabular">{row.v}</dd>
+              </div>
+            ))}
+          </dl>
+        </Card>
+      )}
 
       <div className="grid gap-5 lg:grid-cols-5">
         {/* Rewards */}
@@ -215,7 +268,7 @@ export default function ResultsPage() {
       </div>
 
       {/* Review */}
-      <Card className="p-5 sm:p-6">
+      <Card id="breakdown" className="p-5 sm:p-6">
         <h2 className="mb-3 font-extrabold text-ink">{s.result.review}</h2>
         <ol className="space-y-2">
           {attempt.questions.map((q, i) => {

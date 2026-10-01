@@ -3,337 +3,629 @@ import {
   ArrowRight,
   Award,
   BookOpen,
-  ChartColumn,
-  Flame,
-  Gamepad2,
-  Gift,
-  Hash,
-  ListChecks,
-  RefreshCw,
+  CheckCircle2,
+  Droplets,
+  Globe2,
+  Leaf,
+  Recycle,
+  Search,
   Sparkles,
-  Timer,
   Trophy,
-  WandSparkles,
-  WifiOff,
-  type LucideIcon,
+  Users,
+  Wind,
+  Zap,
 } from 'lucide-react';
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DemoStartModal } from '@/components/DemoStartModal';
-import { LogoutButton } from '@/components/layout/AccountMenu';
-import { CategoryPillsBar } from '@/components/layout/CategoryPillsBar';
-import { TopNoticeBar } from '@/components/layout/TopNoticeBar';
-import { HeroFeatureCards } from '@/components/brand/HeroFeatureCards';
-import { HeroGlobe } from '@/components/brand/HeroGlobe';
-import { Logo } from '@/components/brand/Logo';
-import { Mascot } from '@/components/brand/Mascot';
+import { EarthHandsHeroArt } from '@/components/brand/EarthlyArt';
 import { QuickPinModal } from '@/components/quiz/QuickPinModal';
-import { Button, buttonClasses } from '@/components/ui/Button';
+import { Avatar } from '@/components/ui/Avatar';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { useStrings } from '@/i18n';
 import { paths } from '@/lib/paths';
 import { useApp } from '@/store/context';
 import type { ExperienceMode } from '@/types';
 
-const LOOP: { icon: LucideIcon; title: string; body: string; color: string }[] = [
-  { icon: BookOpen, title: 'Learn', body: 'Bite-sized lessons sized for each age group.', color: 'bg-sky-100 text-sky-700' },
-  { icon: ListChecks, title: 'Quiz', body: 'Generate a fresh quiz on any topic, any level.', color: 'bg-emerald-100 text-emerald-700' },
-  { icon: Timer, title: '10-Second Challenge', body: 'Rapid mini-games that reinforce the topic.', color: 'bg-orange-100 text-orange-700' },
-  { icon: Gift, title: 'Reward', body: 'XP, coins, badges, streaks and levels.', color: 'bg-amber-100 text-amber-700' },
-  { icon: RefreshCw, title: 'Continue', body: 'Personalised next steps based on your results.', color: 'bg-violet-100 text-violet-700' },
-];
-
-const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
-  { icon: WandSparkles, title: 'Dynamic quiz generator', body: 'Pick a topic, difficulty and size — EcoQuest builds a fresh, randomised quiz every time. AI-powered when configured, with a curated offline bank as backup.' },
-  { icon: Gamepad2, title: 'Six 10-second games', body: 'Recycle Sort, Memory Match, Clean the Ocean, Carbon Footprint, Food-Web Puzzle and Eco Decisions — woven into every quiz.' },
-  { icon: Award, title: 'Meaningful gamification', body: 'XP, coins for hints, levels, 14 badges, daily streaks and a daily Eco Challenge that keep learners coming back.' },
-  { icon: Trophy, title: 'Leaderboards', body: 'Global, weekly and friends rankings for 15+, and a friendly, non-competitive Eco Heroes board for kids.' },
-  { icon: ChartColumn, title: 'Progress analytics', body: 'Accuracy trends, weekly XP and topic mastery for teens — simple visual progress for kids.' },
-  { icon: WifiOff, title: 'Works offline', body: 'Runs entirely in the browser with local saving. Firebase and AI plug in through environment variables.' },
-];
-
 export function Landing() {
-  const s = useStrings();
   const { profile } = useApp();
   const navigate = useNavigate();
   const [demoOpen, setDemoOpen] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
-  useDocumentTitle('');
+  const [searchQuery, setSearchQuery] = useState('');
+  useDocumentTitle('EcoQuest · Gamified Environmental Learning Platform');
 
   const enter = (mode: ExperienceMode) => {
     if (profile) navigate(paths(mode).home);
     else navigate(`/start?mode=${mode}`);
   };
+
   const continueHref = profile ? paths(profile.activeMode).home : '/start';
 
-  const handleHeaderPinSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPinOpen(true);
-  };
+  // 5 pastel topic cards directly matching the Earthly Design System (Image 4 top-left)
+  const TOPICS = [
+    {
+      id: 'climate-change',
+      title: 'Climate Change',
+      quizzes: '12 Quizzes',
+      icon: Globe2,
+      cardBg: 'bg-[#E8F5E9] hover:bg-[#DEF0E0] border-[#C8E6C9] text-[#1B5E20]',
+      iconBg: 'bg-[#C8E6C9] text-[#1B5E20]',
+      mode: 'plus' as const,
+    },
+    {
+      id: 'biodiversity-ecosystems',
+      title: 'Biodiversity',
+      quizzes: '10 Quizzes',
+      icon: Leaf,
+      cardBg: 'bg-[#EDE7F6] hover:bg-[#E1D8EE] border-[#D1C4E9] text-[#4A148C]',
+      iconBg: 'bg-[#D1C4E9] text-[#4A148C]',
+      mode: 'plus' as const,
+    },
+    {
+      id: 'renewable-energy',
+      title: 'Renewable Energy',
+      quizzes: '8 Quizzes',
+      icon: Wind,
+      cardBg: 'bg-[#E1F5FE] hover:bg-[#D4EEFC] border-[#B3E5FC] text-[#01579B]',
+      iconBg: 'bg-[#B3E5FC] text-[#01579B]',
+      mode: 'plus' as const,
+    },
+    {
+      id: 'circular-economy-waste',
+      title: 'Waste Management',
+      quizzes: '9 Quizzes',
+      icon: Recycle,
+      cardBg: 'bg-[#FDEED9] hover:bg-[#F9E2C6] border-[#FFE0B2] text-[#E65100]',
+      iconBg: 'bg-[#FFE0B2] text-[#E65100]',
+      mode: 'plus' as const,
+    },
+    {
+      id: 'oceans-water',
+      title: 'Water Conservation',
+      quizzes: '7 Quizzes',
+      icon: Droplets,
+      cardBg: 'bg-[#E0F7FA] hover:bg-[#D0F1F5] border-[#B2EBF2] text-[#006064]',
+      iconBg: 'bg-[#B2EBF2] text-[#006064]',
+      mode: 'plus' as const,
+    },
+  ];
 
   return (
-    <div className="min-h-dvh bg-[#FAF8F5]">
-      {/* Top Privacy & Cookie Notice Bar (from Image 1) */}
-      <TopNoticeBar />
-
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-          <Link to="/" aria-label="EcoQuest home" className="shrink-0">
-            <Logo />
+    <div className="min-h-dvh bg-[#FAF7F2] text-slate-900 selection:bg-[#52B788] selection:text-white font-sans">
+      {/* Top Header - Authentic Earthly Clean Design (Image 4) */}
+      <header className="sticky top-0 z-30 border-b border-[#E8E2D8] bg-[#FAF7F2]/95 backdrop-blur-md">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8">
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="EcoQuest home">
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-[#1B4332] text-white shadow-md shadow-[#1B4332]/20">
+              <Leaf className="size-6 text-[#95D5B2]" />
+            </div>
+            <div>
+              <span className="text-2xl font-black tracking-tight text-[#13382B]">
+                EcoQuest
+              </span>
+              <span className="hidden sm:inline-block ml-2 rounded-full bg-[#E8F5E9] px-2.5 py-0.5 text-[10px] font-black text-[#1B5E20] border border-[#C8E6C9]">
+                Learn & Play
+              </span>
+            </div>
           </Link>
 
-          {/* Join Game? Enter PIN banner inspired by Image 1 */}
-          <div className="hidden md:flex items-center">
-            <form
-              onSubmit={handleHeaderPinSubmit}
-              className="flex items-center gap-2 rounded-full border-2 border-rose-200 bg-[#FFD1CC]/70 px-4 py-1.5 shadow-sm transition hover:bg-[#FFD1CC]"
+          {/* Navigation Links */}
+          <nav aria-label="Main" className="hidden items-center gap-8 text-sm font-bold text-slate-600 md:flex">
+            <Link to="/" className="text-[#13382B] font-black hover:text-[#2D6A4F] transition">
+              Home
+            </Link>
+            <Link to="/plus/quizzes" className="hover:text-[#13382B] transition">
+              Quizzes
+            </Link>
+            <Link to="/plus/leaderboard" className="hover:text-[#13382B] transition">
+              Leaderboard
+            </Link>
+            <Link to="/plus/badges" className="hover:text-[#13382B] transition">
+              Badges
+            </Link>
+            <Link
+              to="/kids"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#E8F5E9] px-3 py-1 text-xs font-black text-[#1B5E20] border border-[#C8E6C9] hover:bg-[#C8E6C9] transition"
             >
-              <span className="text-xs font-black text-rose-900 tracking-tight">Join Game? Enter PIN:</span>
-              <div
-                onClick={() => setPinOpen(true)}
-                className="flex cursor-pointer items-center justify-center rounded-full border border-rose-300 bg-white px-3 py-1 font-mono text-xs font-bold text-slate-700 shadow-inner"
-              >
-                123 456
-              </div>
-            </form>
-          </div>
-
-          <nav aria-label="Sections" className="hidden items-center gap-6 text-sm font-semibold text-slate-600 lg:flex">
-            <a href="#features-cards" className="hover:text-ink">
-              Create & AI
-            </a>
-            <a href="#how" className="hover:text-ink">
-              How it works
-            </a>
-            <a href="#experiences" className="hover:text-ink">
-              Experiences
+              <span>Kids Zone 🧒</span>
+            </Link>
+            <a href="#experiences" className="hover:text-[#13382B] transition">
+              About
             </a>
           </nav>
 
-          <div className="flex items-center gap-2">
+          {/* Right Action Icons & Profile */}
+          <div className="flex items-center gap-3">
+            {/* Search Button */}
+            <div className="relative hidden lg:block">
+              <input
+                type="text"
+                placeholder="Search topics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') navigate('/plus/learn');
+                }}
+                className="w-40 rounded-full border border-[#DDD5C7] bg-white px-3.5 py-1.5 pl-8 text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:w-56 focus:border-[#2D6A4F] focus:outline-none transition-all"
+              />
+              <Search className="absolute left-2.5 top-2 size-3.5 text-slate-400" />
+            </div>
+
+            {/* Quick PIN action */}
             <button
               type="button"
               onClick={() => setPinOpen(true)}
-              className="md:hidden flex items-center gap-1 rounded-full border border-rose-300 bg-[#FFD1CC] px-2.5 py-1 text-xs font-bold text-rose-900"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#D8EDE2] bg-white px-3.5 py-1.5 text-xs font-bold text-[#1B4332] shadow-sm hover:bg-[#EAF6F0] transition"
             >
-              <Hash className="size-3.5" /> PIN
+              <span>Join PIN</span>
             </button>
-            {profile && <LogoutButton compact />}
-            <Link
-              to={continueHref}
-              className="inline-flex items-center justify-center rounded-full border-2 border-slate-900 bg-[#C8F560] px-4 py-1.5 text-xs sm:text-sm font-black text-slate-950 shadow-[0_3px_0_#0f172a] transition hover:bg-[#b5e347] active:translate-y-0.5 active:shadow-none"
-            >
-              {profile ? (
-                <>
-                  <span className="sm:hidden">Continue</span>
-                  <span className="hidden sm:inline">{s.account.continueAs(profile.name)}</span>
-                </>
-              ) : (
-                'Sign in'
-              )}
-            </Link>
+
+            {/* Profile / Sign In Pill */}
+            {profile ? (
+              <Link
+                to={paths(profile.activeMode).home}
+                className="flex items-center gap-2 rounded-full border border-[#DDD5C7] bg-white p-1.5 pr-3 shadow-sm hover:border-[#2D6A4F] transition"
+              >
+                <Avatar avatarId={profile.avatarId} size="sm" />
+                <span className="text-xs font-black text-[#13382B] max-w-24 truncate">
+                  {profile.name}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                to="/start"
+                className="inline-flex items-center justify-center rounded-full bg-[#1B4332] px-5 py-2 text-xs font-black text-white shadow-sm hover:bg-[#2D6A4F] transition"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Category Pills Bar (from Image 1) */}
-      <CategoryPillsBar />
-
       <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_500px_at_85%_10%,#d1fae5_0%,transparent_60%),radial-gradient(700px_400px_at_0%_80%,#e0f2fe_0%,transparent_60%)]" aria-hidden />
-          <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 md:grid-cols-[1.1fr_1fr] md:py-16">
+        {/* HERO SECTION - Exact Earthly Design (Image 4 top-left) */}
+        <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20">
+          {/* Subtle nature aura */}
+          <div
+            className="pointer-events-none absolute -top-40 -right-40 size-[600px] rounded-full bg-[radial-gradient(circle,#D8F3DC_0%,transparent_70%)] opacity-70"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -bottom-20 -left-20 size-[500px] rounded-full bg-[radial-gradient(circle,#E8F5E9_0%,transparent_70%)] opacity-60"
+            aria-hidden
+          />
+
+          <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-8 lg:grid-cols-[1.1fr_1fr]">
+            {/* Left Content Column */}
             <div>
-              <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-bold text-emerald-800 ring-1 ring-emerald-200">
-                <Sparkles className="size-4" aria-hidden /> {s.brand.tagline}
-              </motion.p>
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-                className="mt-5 text-4xl leading-[1.08] font-extrabold tracking-tight text-ink text-balance sm:text-5xl lg:text-6xl"
+                className="inline-flex items-center gap-2 rounded-full bg-[#E8F5E9] px-3.5 py-1.5 text-xs font-black text-[#1B5E20] border border-[#C8E6C9] mb-5 shadow-sm"
               >
-                Learn About Our Planet.{' '}
-                <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 bg-clip-text text-transparent">One Challenge at a Time.</span>
+                <Sparkles className="size-3.5 text-amber-500" />
+                <span>Environmental Gamified Education</span>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#13382B] leading-[1.08]"
+              >
+                Small Quizzes <br />
+                <span className="relative inline-flex items-center gap-3">
+                  <span>Big Impact</span>
+                  <motion.span
+                    animate={{ rotate: [0, 8, -6, 0] }}
+                    transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+                    className="inline-block"
+                  >
+                    <Leaf className="size-9 sm:size-12 text-[#52B788] fill-[#52B788]/20" />
+                  </motion.span>
+                </span>
               </motion.h1>
-              <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-5 max-w-xl text-lg text-slate-600">
-                EcoQuest transforms environmental education into interactive quizzes, rapid mini-games, AI challenges and real rewards — built for classrooms and self-learners alike.
+
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="mt-5 text-base sm:text-lg text-slate-600 max-w-lg leading-relaxed font-medium"
+              >
+                Learn about our planet, earn points, collect badges and be a part of a greener tomorrow!
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
+
+              {/* Action Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mt-8 flex flex-wrap items-center gap-4"
+              >
                 <Link
                   to={continueHref}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 bg-slate-950 px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_0_#0f172a] transition hover:bg-slate-800 active:translate-y-1 active:shadow-none"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#1B4332] px-8 py-3.5 text-sm sm:text-base font-black text-white shadow-xl shadow-[#1B4332]/25 transition hover:bg-[#2D6A4F] hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  {profile ? `Continue your journey` : 'Start Your Eco Journey'} <ArrowRight className="size-5" aria-hidden />
+                  <span>Start Learning</span>
+                  <ArrowRight className="size-5" />
                 </Link>
-                <Button variant="outline" size="lg" onClick={() => setDemoOpen(true)}>
-                  🎓 Continue as Demo Student
-                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => setDemoOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#D8EDE2] bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-[#13382B] shadow-sm transition hover:bg-[#EAF6F0] hover:border-[#B7E4C7]"
+                >
+                  <span>🎓 Demo Student</span>
+                </button>
               </motion.div>
-              <p className="mt-4 text-sm text-slate-500 font-medium">No sign-up needed · Works 100% offline · Instant AI generator</p>
+
+              {/* 3 Social Proof Counters (Direct from Image 4 Hero) */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-10 flex flex-wrap items-center gap-4 sm:gap-6 pt-4 border-t border-[#E8E2D8]"
+              >
+                {/* 100+ Quizzes */}
+                <div className="flex items-center gap-2.5">
+                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
+                    <BookOpen className="size-4" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-black text-[#13382B]">100+</span>
+                    <span className="block text-xs font-semibold text-slate-500">Quizzes</span>
+                  </div>
+                </div>
+
+                {/* 50+ Badges */}
+                <div className="flex items-center gap-2.5">
+                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
+                    <Award className="size-4" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-black text-[#13382B]">50+</span>
+                    <span className="block text-xs font-semibold text-slate-500">Badges</span>
+                  </div>
+                </div>
+
+                {/* 10K+ Green Learners */}
+                <div className="flex items-center gap-2.5">
+                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
+                    <Users className="size-4" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-black text-[#13382B]">10K+</span>
+                    <span className="block text-xs font-semibold text-slate-500">Green Learners</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-            <HeroGlobe />
+
+            {/* Right Column: Handcrafted Earthly Vector Art */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="relative flex items-center justify-center"
+            >
+              <div className="w-full max-w-[500px]">
+                <EarthHandsHeroArt className="w-full h-auto drop-shadow-2xl" />
+              </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Feature Cards (Create a Quiz & A.I. from Image 1) */}
-        <section id="features-cards" className="mx-auto max-w-6xl px-4 py-4 md:py-6">
-          <HeroFeatureCards />
-        </section>
+        {/* CHOOSE YOUR TOPIC - Exact Earthly Pastel Cards (Image 4 top-left) */}
+        <section className="relative mx-auto max-w-7xl px-4 sm:px-8 py-10">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#13382B]">
+                Choose Your Topic
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm font-semibold text-slate-600">
+                Explore interactive challenges curated by environmental science themes
+              </p>
+            </div>
+            <Link
+              to="/plus/learn"
+              className="inline-flex items-center gap-1.5 text-sm font-black text-[#2D6A4F] hover:text-[#1B4332] transition group"
+            >
+              <span>View All</span>
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
 
-        {/* Learning loop */}
-        <section id="how" className="scroll-mt-20 border-y border-slate-100 bg-slate-50/70">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <p className="text-sm font-bold tracking-wide text-emerald-700 uppercase">The EcoQuest learning loop</p>
-            <h2 className="mt-2 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Every session turns knowledge into action.</h2>
-            <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              {LOOP.map((step, i) => (
-                <motion.li
-                  key={step.title}
+          {/* 5 Pastel Rounded Cards Grid */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {TOPICS.map((topic, i) => {
+              const Icon = topic.icon;
+              return (
+                <motion.div
+                  key={topic.id}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.07 }}
-                  className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  transition={{ delay: 0.05 * i }}
                 >
-                  <span className="absolute top-4 right-4 text-xs font-black text-slate-300">0{i + 1}</span>
-                  <span className={`grid size-11 place-items-center rounded-xl ${step.color}`}>
-                    <step.icon className="size-5" aria-hidden />
-                  </span>
-                  <h3 className="mt-4 font-extrabold text-ink">{step.title}</h3>
-                  <p className="mt-1 text-sm text-slate-600">{step.body}</p>
-                </motion.li>
-              ))}
-            </ol>
+                  <Link
+                    to={paths(topic.mode).learn}
+                    className={`flex flex-col justify-between h-44 rounded-3xl border-2 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${topic.cardBg}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className={`flex size-11 items-center justify-center rounded-2xl shadow-sm ${topic.iconBg}`}>
+                        <Icon className="size-5" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-wider opacity-60">
+                        {topic.quizzes}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-base font-black leading-snug">
+                        {topic.title}
+                      </h3>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-black opacity-80 group-hover:opacity-100">
+                        Explore <ArrowRight className="size-3" />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 
-        {/* Experiences */}
-        <section id="experiences" className="scroll-mt-20">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <p className="text-sm font-bold tracking-wide text-emerald-700 uppercase">One platform · Two experiences</p>
-            <h2 className="mt-2 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Age-appropriate by design — not just a different colour.</h2>
-            <div className="mt-10 grid gap-6 lg:grid-cols-2">
-              {/* Kids */}
-              <article data-mode="kids" className="relative overflow-hidden rounded-[2rem] border-2 border-amber-200 bg-gradient-to-br from-amber-100 via-lime-50 to-sky-100 p-6 sm:p-8">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-fun text-sm font-semibold text-amber-800">{s.brand.kids}</p>
-                    <h3 className="mt-1 font-fun text-4xl font-semibold text-ink">{s.brand.kidsMotto}</h3>
-                  </div>
-                  <Mascot mood="cheer" className="size-24 shrink-0" />
-                </div>
-                <div className="mt-6 rounded-3xl border-2 border-white bg-white/90 p-4 shadow-[0_4px_0_#d6efdc]">
-                  <p className="font-fun text-lg font-semibold text-ink">🌱 Which one helps plants grow?</p>
-                  <div className="mt-3 grid grid-cols-2 gap-2 font-fun font-semibold">
-                    {['💧 Water', '🧴 Plastic', '💨 Smoke', '🛢️ Oil'].map((o, i) => (
-                      <span key={o} className={`rounded-2xl border-[3px] px-3 py-2 ${i === 0 ? 'border-emerald-500 bg-emerald-50 text-emerald-900' : 'border-slate-100 bg-white text-slate-600'}`}>
-                        {o}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <ul className="mt-6 grid gap-2 font-fun text-[15px] font-semibold text-slate-700 sm:grid-cols-2">
-                  {['🗺️ Eco Journey adventure map', '🎮 Recycle Sort, Memory Match & Clean the Ocean', '⭐ Eco Stars and friendly Eco Heroes', '🌱 Seedling → Earth Hero ranks'].map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-                <Button size="lg" chunky className="mt-6 bg-orange-500 hover:bg-orange-600" style={{ '--btn-shadow-color': '#c2410c' } as CSSProperties} onClick={() => enter('kids')}>
-                  Enter EcoQuest Kids <ArrowRight className="size-5" aria-hidden />
-                </Button>
-              </article>
+        {/* TWO TAILORED LEARNING PATHS (Earthly 15+ & EcoQuest Kids) */}
+        <section id="experiences" className="relative mx-auto max-w-7xl px-4 sm:px-8 py-12">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="inline-flex items-center rounded-full bg-[#E8F5E9] px-3 py-1 text-xs font-black text-[#1B5E20] border border-[#C8E6C9]">
+              One Mission · Two Bespoke Experiences
+            </span>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight text-[#13382B]">
+              Age-Appropriate Environmental Learning
+            </h2>
+            <p className="mt-2 text-sm sm:text-base font-semibold text-slate-600">
+              Tailored learning loops, gamification models, and science depth built for each stage.
+            </p>
+          </div>
 
-              {/* 15+ */}
-              <article data-mode="plus" className="relative overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                <div className="bg-plus-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden />
-                <div className="relative">
-                  <p className="text-sm font-bold text-teal-700">{s.brand.plus}</p>
-                  <h3 className="mt-1 text-4xl font-extrabold tracking-tight text-ink">{s.brand.plusMotto}</h3>
-                  <div className="mt-6 grid gap-3 sm:grid-cols-[1.4fr_1fr]">
-                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                      <p className="text-xs font-bold text-teal-700 uppercase">Scenario · Hard</p>
-                      <p className="mt-1 text-sm font-semibold text-ink">A commuter drives 12 km each way, 5 days a week, at 0.17 kg CO₂/km. Weekly emissions?</p>
-                      <div className="mt-3 grid grid-cols-2 gap-1.5 text-xs font-semibold">
-                        {['≈ 10 kg', '≈ 20 kg', '≈ 2 kg', '≈ 60 kg'].map((o, i) => (
-                          <span key={o} className={`rounded-lg border px-2 py-1.5 ${i === 1 ? 'border-teal-600 bg-teal-50 text-teal-900' : 'border-slate-200 text-slate-600'}`}>
-                            {o}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                      <p className="text-xs font-bold text-slate-500 uppercase">Weekly XP</p>
-                      <div className="mt-3 flex h-20 items-end gap-1.5" aria-hidden>
-                        {[30, 55, 40, 70, 45, 85, 60].map((h, i) => (
-                          <span key={i} className="flex-1 rounded-t-[4px] bg-teal-600" style={{ height: `${h}%`, opacity: i === 5 ? 1 : 0.55 }} />
-                        ))}
-                      </div>
-                      <p className="mt-2 flex items-center gap-1 text-xs font-bold text-orange-600">
-                        <Flame className="size-3.5" aria-hidden /> 6-day streak · #4 weekly
-                      </p>
-                    </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Path 1: EcoQuest Adult (15+) */}
+            <article className="relative overflow-hidden rounded-[2.5rem] border-2 border-[#13382B] bg-[#13382B] text-white p-7 sm:p-9 shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <span className="inline-block rounded-full bg-[#2D6A4F] px-3 py-1 text-xs font-black text-[#A7F3D0]">
+                      For Teens & Adults (15+)
+                    </span>
+                    <h3 className="mt-2 text-3xl font-black tracking-tight text-white">
+                      EcoQuest 15+
+                    </h3>
                   </div>
-                  <ul className="mt-6 grid gap-2 text-[15px] font-semibold text-slate-700 sm:grid-cols-2">
-                    {['Scenario, data & rapid questions', 'Carbon, Food-Web & Eco Decision games', 'Global / weekly / friends leaderboards', 'Accuracy trends & topic mastery'].map((f) => (
-                      <li key={f} className="flex items-center gap-2">
-                        <span className="size-1.5 rounded-full bg-teal-600" aria-hidden /> {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button size="lg" className="mt-6" onClick={() => enter('plus')}>
-                    Enter EcoQuest 15+ <ArrowRight className="size-5" aria-hidden />
-                  </Button>
+                  <div className="flex size-14 items-center justify-center rounded-2xl bg-[#2D6A4F] text-[#95D5B2]">
+                    <Leaf className="size-7" />
+                  </div>
                 </div>
-              </article>
+
+                <p className="mt-4 text-sm text-[#B7E4C7] leading-relaxed font-medium">
+                  “Small Quizzes, Big Impact.” Dive deep into real-world carbon math, biodiversity trade-offs, circular economy data, and university & college leaderboards.
+                </p>
+
+                <ul className="mt-6 space-y-2.5 text-xs sm:text-sm font-semibold text-[#D8EDE2]">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-[#52B788] shrink-0" />
+                    <span>Real-world environmental scenario & data challenges</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-[#52B788] shrink-0" />
+                    <span>Rapid 10-second games: Carbon Footprint & Food Web Puzzle</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-[#52B788] shrink-0" />
+                    <span>Global, Friends, and College rankings with medal podiums</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-[#52B788] shrink-0" />
+                    <span>Topic mastery metrics & verified environmental badges</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+                <Button
+                  onClick={() => enter('plus')}
+                  className="rounded-full bg-[#52B788] hover:bg-[#40916C] text-white font-black px-7 py-3 text-sm shadow-md"
+                >
+                  Enter EcoQuest (15+) <ArrowRight className="size-4 ml-1.5" />
+                </Button>
+                <span className="text-xs font-bold text-[#86BEA0]">
+                  Deep Science & Scenarios
+                </span>
+              </div>
+            </article>
+
+            {/* Path 2: EcoQuest Kids (Ages 6-14) */}
+            <article className="relative overflow-hidden rounded-[2.5rem] border-2 border-[#B7E4C7] bg-gradient-to-br from-[#E8F5E9] via-[#FAF7F2] to-[#E1F5FE] p-7 sm:p-9 shadow-lg flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <span className="inline-block rounded-full bg-[#C8E6C9] px-3 py-1 text-xs font-black text-[#1B5E20]">
+                      For Young Explorers (Ages 6–14)
+                    </span>
+                    <h3 className="mt-2 text-3xl font-black tracking-tight text-[#13382B]">
+                      EcoQuest Kids
+                    </h3>
+                  </div>
+                  <div className="flex size-14 items-center justify-center rounded-2xl bg-white text-emerald-600 shadow-md border border-[#C8E6C9]">
+                    <span className="text-3xl">🌍</span>
+                  </div>
+                </div>
+
+                <p className="mt-4 text-sm text-slate-600 leading-relaxed font-medium">
+                  “Small Steps Make a Big Planet!” A fun, colorful, non-competitive realm with cheerful mascots, bite-sized lessons, interactive ocean cleaning, and star badges.
+                </p>
+
+                <ul className="mt-6 space-y-2.5 text-xs sm:text-sm font-semibold text-slate-700">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    <span>Eco Journey adventure map with collectible stars</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    <span>Playful mini-games: Recycle Sort & Ocean Cleanup</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    <span>Encouraging Eco Heroes board with positive reinforcement</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    <span>Water Warrior, Tree Hugger & Energy Saver badges</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-4">
+                <Button
+                  onClick={() => enter('kids')}
+                  className="rounded-full bg-[#1B4332] hover:bg-[#2D6A4F] text-white font-black px-7 py-3 text-sm shadow-md"
+                >
+                  Enter EcoQuest Kids <ArrowRight className="size-4 ml-1.5" />
+                </Button>
+                <span className="text-xs font-bold text-slate-500">
+                  Playful & Mascot-Led
+                </span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* WHY STAND OUT / CORE FEATURES */}
+        <section className="relative mx-auto max-w-7xl px-4 sm:px-8 py-12">
+          <div className="rounded-[2.5rem] border border-[#E8E2D8] bg-white p-8 sm:p-12 shadow-sm">
+            <div className="max-w-xl">
+              <span className="text-xs font-black uppercase tracking-wider text-[#2D6A4F]">
+                Architecture & Innovation
+              </span>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-[#13382B]">
+                Engineered for Hackathon Excellence
+              </h2>
+              <p className="mt-2 text-sm font-semibold text-slate-600">
+                Beyond static questions — a complete educational ecosystem operating entirely client-first with seamless AI enhancements.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-slate-100 bg-[#FAF7F2] p-5">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#E8F5E9] text-[#1B5E20]">
+                  <Sparkles className="size-5" />
+                </div>
+                <h3 className="mt-3 text-base font-black text-[#13382B]">AI Quiz Engine</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed font-medium">
+                  Generate fresh, curriculum-aligned questions on any subject or upload a study document.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-[#FAF7F2] p-5">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#EDE7F6] text-[#4A148C]">
+                  <Zap className="size-5" />
+                </div>
+                <h3 className="mt-3 text-base font-black text-[#13382B]">10-Second Games</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed font-medium">
+                  Quick-fire sensory mini-games woven into quiz sessions to reinforce learning concepts.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-[#FAF7F2] p-5">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#E1F5FE] text-[#01579B]">
+                  <Trophy className="size-5" />
+                </div>
+                <h3 className="mt-3 text-base font-black text-[#13382B]">Live Gamification</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed font-medium">
+                  Streaks, level XP progression, 14 milestone badges, and real-time podium leaderboards.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-[#FAF7F2] p-5">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#FDEED9] text-[#E65100]">
+                  <CheckCircle2 className="size-5" />
+                </div>
+                <h3 className="mt-3 text-base font-black text-[#13382B]">100% Offline Ready</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed font-medium">
+                  Zero external database blockers required — complete local persistence and multi-profile switching.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section id="features" className="scroll-mt-20 bg-slate-50/70">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <p className="text-sm font-bold tracking-wide text-emerald-700 uppercase">Inside EcoQuest</p>
-            <h2 className="mt-2 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Built like a real EdTech product.</h2>
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {FEATURES.map((f) => (
-                <li key={f.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <span className="grid size-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
-                    <f.icon className="size-5" aria-hidden />
-                  </span>
-                  <h3 className="mt-4 font-extrabold text-ink">{f.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{f.body}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <div className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-emerald-600 via-teal-600 to-sky-600 p-8 text-white sm:p-12">
-            <div className="pointer-events-none absolute -top-16 -right-10 size-64 rounded-full bg-white/10" aria-hidden />
-            <h2 className="max-w-xl text-3xl font-extrabold tracking-tight sm:text-4xl">Ready to protect the planet — one challenge at a time?</h2>
-            <p className="mt-3 max-w-xl text-emerald-50">Create a profile in seconds, or jump straight in with the demo student.</p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link to={continueHref} className={buttonClasses({ variant: 'white', size: 'lg' })}>
-                Start Your Eco Journey <ArrowRight className="size-5" aria-hidden />
-              </Link>
-              <Button variant="ghost" size="lg" className="text-white ring-2 ring-white/40 hover:bg-white/10" onClick={() => setDemoOpen(true)}>
-                Continue as Demo Student
-              </Button>
+        {/* BOTTOM MOTTO CALLOUT (Matching Earthly Motto) */}
+        <section className="relative mx-auto max-w-7xl px-4 sm:px-8 py-10">
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#1B4332] p-8 sm:p-12 text-white text-center shadow-xl">
+            <div className="max-w-2xl mx-auto">
+              <span className="text-3xl">🌱</span>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight text-white">
+                “Every quiz brings you closer to a greener planet!”
+              </h2>
+              <p className="mt-3 text-sm sm:text-base text-[#B7E4C7] font-medium">
+                Join thousands of learners making conscious daily choices through interactive environmental discovery.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  to={continueHref}
+                  className="rounded-full bg-[#52B788] hover:bg-[#40916C] text-white font-black px-8 py-3.5 text-sm sm:text-base shadow-lg transition"
+                >
+                  Start Your Eco Journey <ArrowRight className="size-4 inline ml-1.5" />
+                </Link>
+                <Link
+                  to="/start"
+                  className="rounded-full border border-white/40 bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3.5 text-sm sm:text-base transition"
+                >
+                  Switch / Pick Profile
+                </Link>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-slate-100">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-8 text-sm text-slate-500 sm:flex-row">
-          <Logo />
-          <p>{s.brand.tagline} · A gamified environmental learning platform.</p>
+      {/* FOOTER */}
+      <footer className="border-t border-[#E8E2D8] bg-[#FAF7F2] py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-8 sm:flex-row text-xs font-semibold text-slate-500">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-7 items-center justify-center rounded-xl bg-[#1B4332] text-white">
+              <Leaf className="size-3.5 text-[#95D5B2]" />
+            </div>
+            <span className="font-black text-slate-800 text-sm">EcoQuest</span>
+          </div>
+          <p>© {new Date().getFullYear()} EcoQuest. Small steps, big planet 💚</p>
         </div>
       </footer>
+
+      {/* Demo Student & Quick PIN Modals */}
       <DemoStartModal open={demoOpen} onClose={() => setDemoOpen(false)} />
       <QuickPinModal open={pinOpen} onClose={() => setPinOpen(false)} />
     </div>
+  );
+}
+
+function Button({
+  children,
+  onClick,
+  className = '',
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center justify-center transition-all active:scale-95 ${className}`}
+    >
+      {children}
+    </button>
   );
 }
