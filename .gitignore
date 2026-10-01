@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build
+dist/
+build/
+
+# Android build artifacts & cache
+.gradle/
+app/android/.gradle/
+app/android/build/
+app/android/app/build/
+app/android/.idea/
+app/android/captures/
+*.apk
+*.aab
+
+# Environment & local settings
+*.local
+.env
+.env.*
+!.env.example
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+.vscode/
+.idea/
