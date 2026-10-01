@@ -1,28 +1,22 @@
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  Award,
-  BookOpen,
   CheckCircle2,
+  ChevronDown,
   Droplets,
   Globe2,
   Leaf,
-  Menu,
   Recycle,
-  Search,
   Sparkles,
+  Triangle,
   Trophy,
-  Users,
   Wind,
-  X,
   Zap,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DemoStartModal } from '@/components/DemoStartModal';
-import { EarthHandsHeroArt } from '@/components/brand/EarthlyArt';
 import { QuickPinModal } from '@/components/quiz/QuickPinModal';
-import { Avatar } from '@/components/ui/Avatar';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { paths } from '@/lib/paths';
 import { useApp } from '@/store/context';
@@ -33,9 +27,22 @@ export function Landing() {
   const navigate = useNavigate();
   const [demoOpen, setDemoOpen] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  useDocumentTitle('EcoQuest · Gamified Environmental Learning Platform');
+  const [navScrolled, setNavScrolled] = useState(false);
+  useDocumentTitle('EcoQuest — One Unified Platform for Environmental Learning');
+
+  useEffect(() => {
+    const handleScroll = () => setNavScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const enter = (mode: ExperienceMode) => {
     if (profile) navigate(paths(mode).home);
@@ -95,315 +102,210 @@ export function Landing() {
 
   return (
     <div className="min-h-dvh bg-[#FAF7F2] text-slate-900 selection:bg-[#52B788] selection:text-white font-sans">
-      {/* Top Header - Authentic Earthly Clean Design (Image 4) */}
-      <header className="sticky top-0 z-30 border-b border-[#E8E2D8] bg-[#FAF7F2]/95 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="EcoQuest home">
-            <div className="flex size-11 items-center justify-center rounded-2xl bg-[#1B4332] text-white shadow-md shadow-[#1B4332]/20">
-              <Leaf className="size-6 text-[#95D5B2]" />
+      {/* 1) Fixed Navbar matching Palomar Spec */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          navScrolled
+            ? 'bg-brand-cream/95 backdrop-blur-md shadow-sm border-b border-brand-dark/10'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="relative flex items-center justify-between h-16 md:h-20">
+            {/* Desktop Left Links */}
+            <div className="hidden md:flex items-center gap-8 animate-fade-down stagger-1 flex-1">
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById('experiences');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else navigate('/start');
+                }}
+                className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity flex items-center gap-1 cursor-pointer font-helvetica-neue"
+              >
+                Solutions
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+              <a
+                href="#experiences"
+                className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity font-helvetica-neue"
+              >
+                Plans
+              </a>
+              <Link
+                to="/plus/quizzes"
+                className="text-sm text-brand-dark tracking-wide uppercase hover:opacity-70 transition-opacity font-helvetica-neue"
+              >
+                News
+              </Link>
             </div>
-            <div>
-              <span className="text-2xl font-black tracking-tight text-[#13382B]">
+
+            {/* Center Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-2 animate-fade-down stagger-2 select-none shrink-0"
+              aria-label="EcoQuest Home"
+            >
+              <Triangle className="w-5 h-5 text-brand-dark fill-brand-dark" />
+              <span className="text-xl text-brand-dark tracking-tight font-helvetica-neue font-medium">
                 EcoQuest
               </span>
-              <span className="hidden sm:inline-block ml-2 rounded-full bg-[#E8F5E9] px-2.5 py-0.5 text-[10px] font-black text-[#1B5E20] border border-[#C8E6C9]">
-                Learn & Play
-              </span>
-            </div>
-          </Link>
+            </Link>
 
-          {/* Navigation Links */}
-          <nav aria-label="Main" className="hidden items-center gap-8 text-sm font-bold text-slate-600 md:flex">
-            <Link to="/" className="text-[#13382B] font-black hover:text-[#2D6A4F] transition">
-              Home
-            </Link>
-            <Link to="/plus/quizzes" className="hover:text-[#13382B] transition">
-              Quizzes
-            </Link>
-            <Link to="/plus/leaderboard" className="hover:text-[#13382B] transition">
-              Leaderboard
-            </Link>
-            <Link to="/plus/badges" className="hover:text-[#13382B] transition">
-              Badges
-            </Link>
-            <Link
-              to="/kids"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#E8F5E9] px-3 py-1 text-xs font-black text-[#1B5E20] border border-[#C8E6C9] hover:bg-[#C8E6C9] transition"
-            >
-              <span>Kids Zone 🧒</span>
-            </Link>
-            <a href="#experiences" className="hover:text-[#13382B] transition">
-              About
-            </a>
-          </nav>
-
-          {/* Right Action Icons & Profile */}
-          <div className="flex items-center gap-3">
-            {/* Search Button */}
-            <div className="relative hidden lg:block">
-              <input
-                type="text"
-                placeholder="Search topics..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') navigate('/plus/learn');
-                }}
-                className="w-40 rounded-full border border-[#DDD5C7] bg-white px-3.5 py-1.5 pl-8 text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:w-56 focus:border-[#2D6A4F] focus:outline-none transition-all"
-              />
-              <Search className="absolute left-2.5 top-2 size-3.5 text-slate-400" />
-            </div>
-
-            {/* Quick PIN action */}
-            <button
-              type="button"
-              onClick={() => setPinOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#D8EDE2] bg-white px-3.5 py-1.5 text-xs font-bold text-[#1B4332] shadow-sm hover:bg-[#EAF6F0] transition"
-            >
-              <span>Join PIN</span>
-            </button>
-
-            {/* Profile / Sign In Pill */}
-            {profile ? (
-              <Link
-                to={paths(profile.activeMode).home}
-                className="flex items-center gap-2 rounded-full border border-[#DDD5C7] bg-white p-1.5 pr-3 shadow-sm hover:border-[#2D6A4F] transition"
+            {/* Desktop CTA & Demo (Right) */}
+            <div className="hidden md:flex items-center justify-end gap-3 flex-1 animate-fade-down stagger-3">
+              <button
+                type="button"
+                onClick={() => setDemoOpen(true)}
+                className="inline-flex items-center px-4 py-2 border border-brand-dark/20 text-brand-dark text-xs tracking-wide uppercase rounded-full hover:bg-brand-dark/5 transition-colors font-helvetica-neue font-medium"
               >
-                <Avatar avatarId={profile.avatarId} size="sm" />
-                <span className="text-xs font-black text-[#13382B] max-w-24 truncate">
-                  {profile.name}
-                </span>
-              </Link>
-            ) : (
+                Demo
+              </button>
               <Link
                 to="/start"
-                className="inline-flex items-center justify-center rounded-full bg-[#1B4332] px-5 py-2 text-xs font-black text-white shadow-sm hover:bg-[#2D6A4F] transition"
+                className="inline-flex items-center px-5 py-2.5 bg-brand-dark text-white text-sm tracking-wide uppercase rounded-full hover:bg-brand-green transition-colors select-none font-helvetica-neue"
               >
-                Sign In
+                Try It Free
               </Link>
-            )}
+            </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle navigation menu"
-              className="flex md:hidden size-10 items-center justify-center rounded-2xl border border-[#DDD5C7] bg-white text-slate-700 shadow-sm hover:bg-[#F2ECE1] transition"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              className="md:hidden ml-auto z-50 w-10 h-10 flex items-center justify-center relative focus:outline-hidden"
             >
-              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              <div className="relative w-6 h-5">
+                <span
+                  className={`absolute left-0 w-6 h-[2px] bg-brand-dark rounded transition-all duration-300 ease-[cubic-bezier(0.68,-0.6,0.32,1.6)] ${
+                    mobileMenuOpen ? 'top-[6px] rotate-45 translate-y-[5px]' : 'top-[6px]'
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 w-6 h-[2px] bg-brand-dark rounded transition-all duration-300 ease-[cubic-bezier(0.68,-0.6,0.32,1.6)] ${
+                    mobileMenuOpen ? 'top-[13px] -rotate-45' : 'top-[13px]'
+                  }`}
+                />
+              </div>
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-[#E8E2D8] bg-[#FAF7F2] px-6 py-5 shadow-lg"
+        {/* Mobile Fullscreen Overlay */}
+        <div
+          className={`md:hidden fixed inset-0 bg-brand-cream z-40 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <div
+            className={`flex flex-col items-center justify-center h-full gap-8 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] delay-100 ${
+              mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
+            }`}
           >
-            <div className="flex flex-col gap-3 text-sm font-black text-slate-700">
-              <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-xl px-3 py-2 text-[#13382B] hover:bg-[#E8F5E9] transition"
-              >
-                <span>Home</span>
-                <ArrowRight className="size-4 opacity-50" />
-              </Link>
-              <Link
-                to="/plus/quizzes"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
-              >
-                <span>Quizzes</span>
-                <ArrowRight className="size-4 opacity-50" />
-              </Link>
-              <Link
-                to="/plus/leaderboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
-              >
-                <span>Leaderboard</span>
-                <ArrowRight className="size-4 opacity-50" />
-              </Link>
-              <Link
-                to="/plus/badges"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
-              >
-                <span>Badges</span>
-                <ArrowRight className="size-4 opacity-50" />
-              </Link>
-              <Link
-                to="/kids"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-2xl bg-[#E8F5E9] border border-[#C8E6C9] px-4 py-2.5 text-[#1B5E20] hover:bg-[#C8E6C9] transition"
-              >
-                <span>Kids Zone 🧒</span>
-                <ArrowRight className="size-4" />
-              </Link>
+            <a
+              href="#experiences"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl text-brand-dark tracking-tight font-helvetica-neue"
+            >
+              Solutions
+            </a>
+            <a
+              href="#experiences"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl text-brand-dark tracking-tight font-helvetica-neue"
+            >
+              Plans
+            </a>
+            <Link
+              to="/plus/quizzes"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl text-brand-dark tracking-tight font-helvetica-neue"
+            >
+              News
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setDemoOpen(true);
+              }}
+              className="text-2xl text-brand-dark tracking-tight font-helvetica-neue opacity-80"
+            >
+              🎓 Demo Student
+            </button>
+            <Link
+              to="/start"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-4 inline-flex items-center px-8 py-3.5 bg-brand-dark text-white text-lg tracking-wide uppercase rounded-full hover:bg-brand-green transition-colors font-helvetica-neue"
+            >
+              Try It Free
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-              <div className="pt-2 border-t border-[#E8E2D8] flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setPinOpen(true);
-                  }}
-                  className="flex-1 rounded-full border border-[#D8EDE2] bg-white py-2 text-center text-xs font-bold text-[#1B4332] shadow-sm hover:bg-[#EAF6F0]"
-                >
-                  Join PIN
-                </button>
-                <Link
-                  to="/start"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 rounded-full bg-[#1B4332] py-2 text-center text-xs font-black text-white shadow-sm hover:bg-[#2D6A4F]"
-                >
-                  {profile ? 'My Profile' : 'Sign In'}
-                </Link>
-              </div>
+      {/* 2) Full-viewport Hero matching Palomar Spec */}
+      <section className="relative w-full h-screen min-h-[700px] overflow-hidden bg-brand-cream font-helvetica-neue">
+        {/* Video layer */}
+        <div className="absolute inset-0">
+          <video
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260820_010308_b1636845-4c15-4ab6-b0c9-9a29bfb0c6e3.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover object-bottom"
+          />
+        </div>
+
+        {/* Content column */}
+        <div className="relative z-10 flex flex-col items-start max-w-7xl mx-auto pt-28 md:pt-36 px-6 lg:px-8">
+          {/* Announcement pill */}
+          <Link
+            to="/start"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-dark/15 bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors mb-5 md:mb-6 animate-fade-up stagger-3"
+          >
+            <span className="text-sm text-brand-dark font-normal">
+              Live for everyone today! Explore eco-quests and win badges.
+            </span>
+            <ArrowRight className="w-3.5 h-3.5 text-brand-dark" />
+          </Link>
+
+          {/* Headline */}
+          <h1 className="text-left text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-brand-dark leading-[1.05] tracking-tight max-w-4xl font-helvetica-neue font-light animate-fade-up stagger-4">
+            One unified platform to learn,
+            <br className="hidden sm:block" /> play, master, and protect Earth
+          </h1>
+
+          {/* 3) Trusted by (inside Hero, under headline) */}
+          <div className="w-full mt-8 md:mt-10 animate-fade-up stagger-5">
+            <p className="text-left text-xs tracking-[0.25em] uppercase text-brand-dark/50 mb-6 md:mb-8 font-helvetica-neue">
+              Backed by
+            </p>
+            <div className="flex flex-wrap items-center justify-start gap-6 md:gap-12 lg:gap-16 animate-fade-up stagger-6">
+              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-playfair font-bold">
+                Meridian
+              </span>
+              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-oswald uppercase font-medium">
+                STELLEX
+              </span>
+              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-montserrat font-bold">
+                Luminar
+              </span>
+              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-roboto-slab uppercase font-semibold">
+                OVERLAND
+              </span>
+              <span className="text-lg md:text-xl lg:text-2xl text-brand-dark/80 whitespace-nowrap font-raleway font-bold">
+                Kinetic
+              </span>
             </div>
-          </motion.div>
-        )}
-      </header>
+          </div>
+        </div>
+      </section>
 
       <main>
-        {/* HERO SECTION - Exact Earthly Design (Image 4 top-left) */}
-        <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20">
-          {/* Subtle nature aura */}
-          <div
-            className="pointer-events-none absolute -top-40 -right-40 size-[600px] rounded-full bg-[radial-gradient(circle,#D8F3DC_0%,transparent_70%)] opacity-70"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute -bottom-20 -left-20 size-[500px] rounded-full bg-[radial-gradient(circle,#E8F5E9_0%,transparent_70%)] opacity-60"
-            aria-hidden
-          />
-
-          <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-8 lg:grid-cols-[1.1fr_1fr]">
-            {/* Left Content Column */}
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-2 rounded-full bg-[#E8F5E9] px-3.5 py-1.5 text-xs font-black text-[#1B5E20] border border-[#C8E6C9] mb-5 shadow-sm"
-              >
-                <Sparkles className="size-3.5 text-amber-500" />
-                <span>Environmental Gamified Education</span>
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#13382B] leading-[1.08]"
-              >
-                Small Quizzes <br />
-                <span className="relative inline-flex items-center gap-3">
-                  <span>Big Impact</span>
-                  <motion.span
-                    animate={{ rotate: [0, 8, -6, 0] }}
-                    transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-                    className="inline-block"
-                  >
-                    <Leaf className="size-9 sm:size-12 text-[#52B788] fill-[#52B788]/20" />
-                  </motion.span>
-                </span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mt-5 text-base sm:text-lg text-slate-600 max-w-lg leading-relaxed font-medium"
-              >
-                Learn about our planet, earn points, collect badges and be a part of a greener tomorrow!
-              </motion.p>
-
-              {/* Action Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="mt-8 flex flex-wrap items-center gap-4"
-              >
-                <Link
-                  to={continueHref}
-                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#1B4332] px-8 py-3.5 text-sm sm:text-base font-black text-white shadow-xl shadow-[#1B4332]/25 transition hover:bg-[#2D6A4F] hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  <span>Start Learning</span>
-                  <ArrowRight className="size-5" />
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => setDemoOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#D8EDE2] bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-[#13382B] shadow-sm transition hover:bg-[#EAF6F0] hover:border-[#B7E4C7]"
-                >
-                  <span>🎓 Demo Student</span>
-                </button>
-              </motion.div>
-
-              {/* 3 Social Proof Counters (Direct from Image 4 Hero) */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-10 flex flex-wrap items-center gap-4 sm:gap-6 pt-4 border-t border-[#E8E2D8]"
-              >
-                {/* 100+ Quizzes */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
-                    <BookOpen className="size-4" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-black text-[#13382B]">100+</span>
-                    <span className="block text-xs font-semibold text-slate-500">Quizzes</span>
-                  </div>
-                </div>
-
-                {/* 50+ Badges */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
-                    <Award className="size-4" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-black text-[#13382B]">50+</span>
-                    <span className="block text-xs font-semibold text-slate-500">Badges</span>
-                  </div>
-                </div>
-
-                {/* 10K+ Green Learners */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex size-9 items-center justify-center rounded-full bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9]">
-                    <Users className="size-4" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-black text-[#13382B]">10K+</span>
-                    <span className="block text-xs font-semibold text-slate-500">Green Learners</span>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Right Column: Handcrafted Earthly Vector Art */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.4 }}
-              className="relative flex items-center justify-center"
-            >
-              <div className="w-full max-w-[500px]">
-                <EarthHandsHeroArt className="w-full h-auto drop-shadow-2xl" />
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* CHOOSE YOUR TOPIC - Exact Earthly Pastel Cards (Image 4 top-left) */}
         <section className="relative mx-auto max-w-7xl px-4 sm:px-8 py-10">
           <div className="flex items-center justify-between mb-6">
             <div>
