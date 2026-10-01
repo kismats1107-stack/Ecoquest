@@ -7,15 +7,17 @@ import {
   Droplets,
   Globe2,
   Leaf,
+  Menu,
   Recycle,
   Search,
   Sparkles,
   Trophy,
   Users,
   Wind,
+  X,
   Zap,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DemoStartModal } from '@/components/DemoStartModal';
 import { EarthHandsHeroArt } from '@/components/brand/EarthlyArt';
@@ -32,20 +34,8 @@ export function Landing() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useDocumentTitle('EcoQuest · Gamified Environmental Learning Platform');
-
-  useEffect(() => {
-    const handleScroll = () => setNavScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [mobileMenuOpen]);
 
   const enter = (mode: ExperienceMode) => {
     if (profile) navigate(paths(mode).home);
@@ -105,181 +95,180 @@ export function Landing() {
 
   return (
     <div className="min-h-dvh bg-[#FAF7F2] text-slate-900 selection:bg-[#52B788] selection:text-white font-sans">
-
-      {/* ═══════════════════════════════════════════════
-           PALOMAR-STYLE FIXED NAVBAR
-      ═══════════════════════════════════════════════ */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          navScrolled
-            ? 'bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8E2D8] shadow-sm'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="relative flex items-center h-16 md:h-20">
-
-            {/* Desktop Left Links */}
-            <div className="hidden md:flex items-center gap-10">
-              <button
-                type="button"
-                onClick={() => navigate('/start')}
-                className={`text-xs font-semibold tracking-[0.15em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
-                  navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
-                }`}
-              >
-                Solutions
-                <svg className="w-3 h-3 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-              <a href="#experiences" className={`text-xs font-semibold tracking-[0.15em] uppercase transition-colors ${
-                navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
-              }`}>Experiences</a>
-              <a href="#features" className={`text-xs font-semibold tracking-[0.15em] uppercase transition-colors ${
-                navScrolled ? 'text-[#1B4332] hover:text-[#2D6A4F]' : 'text-white/90 hover:text-white'
-              }`}>Features</a>
+      {/* Top Header - Authentic Earthly Clean Design (Image 4) */}
+      <header className="sticky top-0 z-30 border-b border-[#E8E2D8] bg-[#FAF7F2]/95 backdrop-blur-md">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8">
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="EcoQuest home">
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-[#1B4332] text-white shadow-md shadow-[#1B4332]/20">
+              <Leaf className="size-6 text-[#95D5B2]" />
             </div>
-
-            {/* Center Logo */}
-            <a
-              href="/"
-              className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 select-none"
-              aria-label="EcoQuest Home"
-            >
-              <svg
-                className={`w-5 h-5 transition-colors ${ navScrolled ? 'fill-[#1B4332]' : 'fill-white' }`}
-                viewBox="0 0 24 24"
-              >
-                <polygon points="12 2 22 20 2 20"/>
-              </svg>
-              <span className={`text-lg font-semibold tracking-tight transition-colors ${ navScrolled ? 'text-[#1B4332]' : 'text-white' }`}>
+            <div>
+              <span className="text-2xl font-black tracking-tight text-[#13382B]">
                 EcoQuest
               </span>
-            </a>
+              <span className="hidden sm:inline-block ml-2 rounded-full bg-[#E8F5E9] px-2.5 py-0.5 text-[10px] font-black text-[#1B5E20] border border-[#C8E6C9]">
+                Learn & Play
+              </span>
+            </div>
+          </Link>
 
-            {/* Desktop CTA (Right) */}
-            <a
-              href="/start"
-              className={`hidden md:inline-flex items-center ml-auto px-5 py-2 text-xs font-semibold tracking-[0.15em] uppercase rounded-full border transition-colors ${
-                navScrolled
-                  ? 'bg-[#1B4332] text-white border-[#1B4332] hover:bg-[#2D6A4F]'
-                  : 'bg-white/15 text-white border-white/40 hover:bg-white/25 backdrop-blur-sm'
-              }`}
+          {/* Navigation Links */}
+          <nav aria-label="Main" className="hidden items-center gap-8 text-sm font-bold text-slate-600 md:flex">
+            <Link to="/" className="text-[#13382B] font-black hover:text-[#2D6A4F] transition">
+              Home
+            </Link>
+            <Link to="/plus/quizzes" className="hover:text-[#13382B] transition">
+              Quizzes
+            </Link>
+            <Link to="/plus/leaderboard" className="hover:text-[#13382B] transition">
+              Leaderboard
+            </Link>
+            <Link to="/plus/badges" className="hover:text-[#13382B] transition">
+              Badges
+            </Link>
+            <Link
+              to="/kids"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#E8F5E9] px-3 py-1 text-xs font-black text-[#1B5E20] border border-[#C8E6C9] hover:bg-[#C8E6C9] transition"
             >
-              Try It Free
+              <span>Kids Zone 🧒</span>
+            </Link>
+            <a href="#experiences" className="hover:text-[#13382B] transition">
+              About
             </a>
+          </nav>
 
-            {/* Mobile Hamburger Button */}
+          {/* Right Action Icons & Profile */}
+          <div className="flex items-center gap-3">
+            {/* Search Button */}
+            <div className="relative hidden lg:block">
+              <input
+                type="text"
+                placeholder="Search topics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') navigate('/plus/learn');
+                }}
+                className="w-40 rounded-full border border-[#DDD5C7] bg-white px-3.5 py-1.5 pl-8 text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:w-56 focus:border-[#2D6A4F] focus:outline-none transition-all"
+              />
+              <Search className="absolute left-2.5 top-2 size-3.5 text-slate-400" />
+            </div>
+
+            {/* Quick PIN action */}
+            <button
+              type="button"
+              onClick={() => setPinOpen(true)}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#D8EDE2] bg-white px-3.5 py-1.5 text-xs font-bold text-[#1B4332] shadow-sm hover:bg-[#EAF6F0] transition"
+            >
+              <span>Join PIN</span>
+            </button>
+
+            {/* Profile / Sign In Pill */}
+            {profile ? (
+              <Link
+                to={paths(profile.activeMode).home}
+                className="flex items-center gap-2 rounded-full border border-[#DDD5C7] bg-white p-1.5 pr-3 shadow-sm hover:border-[#2D6A4F] transition"
+              >
+                <Avatar avatarId={profile.avatarId} size="sm" />
+                <span className="text-xs font-black text-[#13382B] max-w-24 truncate">
+                  {profile.name}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                to="/start"
+                className="inline-flex items-center justify-center rounded-full bg-[#1B4332] px-5 py-2 text-xs font-black text-white shadow-sm hover:bg-[#2D6A4F] transition"
+              >
+                Sign In
+              </Link>
+            )}
+
+            {/* Mobile Menu Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              className="md:hidden ml-auto z-50 w-10 h-10 flex items-center justify-center relative focus:outline-hidden"
+              aria-label="Toggle navigation menu"
+              className="flex md:hidden size-10 items-center justify-center rounded-2xl border border-[#DDD5C7] bg-white text-slate-700 shadow-sm hover:bg-[#F2ECE1] transition"
             >
-              <div className="relative w-6 h-5">
-                <span
-                  className={`absolute left-0 w-6 h-[2px] bg-brand-dark rounded transition-all duration-300 ease-[cubic-bezier(0.68,-0.6,0.32,1.6)] ${
-                    mobileMenuOpen ? 'top-[6px] rotate-45 translate-y-[5px]' : 'top-[6px]'
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 w-6 h-[2px] bg-brand-dark rounded transition-all duration-300 ease-[cubic-bezier(0.68,-0.6,0.32,1.6)] ${
-                    mobileMenuOpen ? 'top-[13px] -rotate-45' : 'top-[13px]'
-                  }`}
-                />
-              </div>
+              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Fullscreen Overlay */}
-        <div
-          className={`md:hidden fixed inset-0 bg-brand-cream z-40 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          }`}
-        >
-          <div
-            className={`flex flex-col items-center justify-center h-full gap-8 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] delay-100 ${
-              mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'
-            }`}
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-[#E8E2D8] bg-[#FAF7F2] px-6 py-5 shadow-lg"
           >
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate('/start'); }} className="text-3xl text-brand-dark tracking-tight">Solutions</button>
-            <a href="#experiences" onClick={() => setMobileMenuOpen(false)} className="text-3xl text-brand-dark tracking-tight">Experiences</a>
-            <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-3xl text-brand-dark tracking-tight">Features</a>
-            <a href="/start" className="mt-4 inline-flex items-center px-8 py-3.5 bg-brand-dark text-white text-lg tracking-wide rounded-full hover:bg-brand-green transition-colors">
-              Try It Free
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      {/* ═══ VIDEO HERO ═══ */}
-      <section className="relative w-full h-screen min-h-[680px] overflow-hidden">
-        {/* Full-bleed video */}
-        <video
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260820_010308_b1636845-4c15-4ab6-b0c9-9a29bfb0c6e3.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Dark gradient overlay so text is readable */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/50" />
-
-        {/* Hero content — vertically centered, bottom logos pinned */}
-        <div className="relative z-10 h-full flex flex-col justify-between max-w-7xl mx-auto px-6 lg:px-8">
-
-          {/* Center block: headline + CTA */}
-          <div className="flex-1 flex flex-col justify-center pt-24">
-            {/* Pill */}
-            <a
-              href="/start"
-              className="self-start inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors mb-6"
-            >
-              <span className="text-xs text-white font-medium tracking-wide">🌿 Live for everyone — explore quests and win badges</span>
-              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-light leading-[1.05] tracking-tight max-w-4xl">
-              One unified platform<br />
-              <span className="italic">to learn, play &amp; protect Earth</span>
-            </h1>
-
-            {/* Sub CTA buttons */}
-            <div className="flex flex-wrap items-center gap-4 mt-10">
-              <a
-                href="/start"
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#1B4332] text-sm font-bold rounded-full hover:bg-[#E8F5E9] transition-colors"
+            <div className="flex flex-col gap-3 text-sm font-black text-slate-700">
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-xl px-3 py-2 text-[#13382B] hover:bg-[#E8F5E9] transition"
               >
-                Get Started Free
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-              <button
-                type="button"
-                onClick={() => setDemoOpen(true)}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-white text-sm font-semibold rounded-full border border-white/40 hover:border-white hover:bg-white/10 transition-colors"
+                <span>Home</span>
+                <ArrowRight className="size-4 opacity-50" />
+              </Link>
+              <Link
+                to="/plus/quizzes"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
               >
-                ▶ Watch Demo
-              </button>
-            </div>
-          </div>
+                <span>Quizzes</span>
+                <ArrowRight className="size-4 opacity-50" />
+              </Link>
+              <Link
+                to="/plus/leaderboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
+              >
+                <span>Leaderboard</span>
+                <ArrowRight className="size-4 opacity-50" />
+              </Link>
+              <Link
+                to="/plus/badges"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-[#E8F5E9] transition"
+              >
+                <span>Badges</span>
+                <ArrowRight className="size-4 opacity-50" />
+              </Link>
+              <Link
+                to="/kids"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-2xl bg-[#E8F5E9] border border-[#C8E6C9] px-4 py-2.5 text-[#1B5E20] hover:bg-[#C8E6C9] transition"
+              >
+                <span>Kids Zone 🧒</span>
+                <ArrowRight className="size-4" />
+              </Link>
 
-          {/* Bottom bar: Backed by */}
-          <div className="pb-10">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-4">Trusted by learners worldwide</p>
-            <div className="flex flex-wrap items-center gap-8 md:gap-14">
-              <span className="text-base md:text-lg text-white/60 font-playfair font-bold">Meridian</span>
-              <span className="text-base md:text-lg text-white/60 font-oswald uppercase">STELLEX</span>
-              <span className="text-base md:text-lg text-white/60 font-montserrat font-bold">Luminar</span>
-              <span className="text-base md:text-lg text-white/60 font-roboto-slab uppercase">OVERLAND</span>
-              <span className="text-base md:text-lg text-white/60 font-raleway font-bold">Kinetic</span>
+              <div className="pt-2 border-t border-[#E8E2D8] flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setPinOpen(true);
+                  }}
+                  className="flex-1 rounded-full border border-[#D8EDE2] bg-white py-2 text-center text-xs font-bold text-[#1B4332] shadow-sm hover:bg-[#EAF6F0]"
+                >
+                  Join PIN
+                </button>
+                <Link
+                  to="/start"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 rounded-full bg-[#1B4332] py-2 text-center text-xs font-black text-white shadow-sm hover:bg-[#2D6A4F]"
+                >
+                  {profile ? 'My Profile' : 'Sign In'}
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
+          </motion.div>
+        )}
+      </header>
 
       <main>
         {/* HERO SECTION - Exact Earthly Design (Image 4 top-left) */}
